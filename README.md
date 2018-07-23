@@ -1,2 +1,2 @@
-# osmosis-data-ec2-driver
-Osmosis Data Amazon EC2 Driver
+# osmosis-data-s3-driver
+Osmosis Data Amazon S3 Driver
