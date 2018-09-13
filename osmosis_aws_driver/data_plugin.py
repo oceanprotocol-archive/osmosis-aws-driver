@@ -180,7 +180,11 @@ class Plugin(AbstractPlugin):
             self.s3meta.meta.client.head_bucket(Bucket=bucket)
         except botocore.exceptions.ClientError:
             try:
-                self.s3.create_bucket(Bucket=bucket, CreateBucketConfiguration={'LocationConstraint': self.location})
+                if self.location == 'us-east-1':
+                    self.s3.create_bucket(Bucket=bucket)
+                else:
+                    self.s3.create_bucket(Bucket=bucket,
+                                          CreateBucketConfiguration={'LocationConstraint': self.location})
             except Exception:
                 logging.error(f"Error creating bucket {bucket} in region {self.location}")
                 raise OsmosisError
