@@ -59,11 +59,8 @@ class Plugin(AbstractPlugin):
         """ :type : pyboto3.s3 """
         self.s3meta = boto3.resource('s3')
 
-        self.location = os.getenv('AWS_DEFAULT_REGION', 'EU')
-        self.logger.debug("Created a new S3 plugin object".format())
-        self.logger.warning("Created a new S3 plugin object".format())
-
-        logging.debug("Test logging in data_plugin".format())
+        self.location = os.getenv('AWS_DEFAULT_REGION', 'eu-central-1')
+        self.logger.debug("Created a new S3 plugin object in region: {}".format(self.location))
 
     @property
     def type(self):
