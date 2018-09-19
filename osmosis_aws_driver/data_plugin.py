@@ -6,6 +6,9 @@ import botocore
 from osmosis_driver_interface.data_plugin import AbstractPlugin
 from osmosis_driver_interface.exceptions import OsmosisError
 
+from osmosis_aws_driver.log import setup_logging
+
+setup_logging()
 
 class Plugin(AbstractPlugin):
     """

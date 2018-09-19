@@ -6,7 +6,7 @@ import coloredlogs
 import yaml
 
 
-def setup_logging(default_path='logging.yaml', default_level=logging.INFO, env_key='LOG_CFG'):
+def setup_logging(default_path='logging.yml', default_level=logging.INFO, env_key='LOG_CFG'):
     """Logging Setup"""
     path = default_path
     value = os.getenv(env_key, None)
@@ -27,3 +27,4 @@ def setup_logging(default_path='logging.yaml', default_level=logging.INFO, env_k
         logging.basicConfig(level=default_level)
         coloredlogs.install(level=default_level)
         print('Failed to load configuration file. Using default configs')
+    print('Logging configuration loaded from WORKINGDIR/{}'.format(default_path))
