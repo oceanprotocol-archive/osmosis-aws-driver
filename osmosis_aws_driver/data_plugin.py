@@ -5,10 +5,39 @@ import boto3
 import botocore
 from osmosis_driver_interface.data_plugin import AbstractPlugin
 from osmosis_driver_interface.exceptions import OsmosisError
+import sys
 
-from osmosis_aws_driver.log import setup_logging
 
-setup_logging()
+# THIS IS DISABLED FOR NOW!
+#from osmosis_aws_driver.log import setup_logging
+#setup_logging()
+
+import logging
+
+################################### SETUP LOGGING! ###################################
+loggers_dict = logging.Logger.manager.loggerDict
+
+logger = logging.getLogger()
+logger.handlers = []
+
+# Set level
+logger.setLevel(logging.DEBUG)
+
+# Create formatter
+
+# FORMAT = "%(asctime)s - %(levelno)s - %(module)-15s - %(funcName)-15s - %(message)s"
+FORMAT = "%(asctime)s L%(levelno)s: %(message)s"
+
+DATE_FMT = "%Y-%m-%d %H:%M:%S"
+formatter = logging.Formatter(FORMAT, DATE_FMT)
+
+# Create handler and assign
+handler = logging.StreamHandler(sys.stderr)
+handler.setFormatter(formatter)
+logger.handlers = [handler]
+################################### SETUP LOGGING! ###################################
+
+logging.debug("Started logging in data_plugin.py".format())
 
 class Plugin(AbstractPlugin):
     """
@@ -23,6 +52,10 @@ class Plugin(AbstractPlugin):
         self.s3meta = boto3.resource('s3')
 
         self.location = os.getenv('AWS_DEFAULT_REGION', 'EU')
+        self.logger.debug("Created a new S3 plugin object".format())
+        self.logger.warning("Created a new S3 plugin object".format())
+
+        logging.debug("Test logging in data_plugin".format())
 
     @property
     def type(self):
