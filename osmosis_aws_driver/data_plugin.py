@@ -25,8 +25,8 @@ logger.setLevel(logging.DEBUG)
 
 # Create formatter
 
-# FORMAT = "%(asctime)s - %(levelno)s - %(module)-15s - %(funcName)-15s - %(message)s"
-FORMAT = "%(asctime)s L%(levelno)s: %(message)s"
+FORMAT = "%(asctime)s - %(levelno)s - %(name)-25s -  %(module)-20s - %(funcName)-20s - %(message)s"
+#FORMAT = "%(asctime)s L%(levelno)s: %(message)s"
 
 DATE_FMT = "%Y-%m-%d %H:%M:%S"
 formatter = logging.Formatter(FORMAT, DATE_FMT)
@@ -36,6 +36,14 @@ handler = logging.StreamHandler(sys.stderr)
 handler.setFormatter(formatter)
 logger.handlers = [handler]
 ################################### SETUP LOGGING! ###################################
+
+
+# logging.getLogger('boto3').setLevel(logging.WARNING)
+# logging.getLogger('botocore').setLevel(logging.WARNING)
+# logging.getLogger('nose').setLevel(logging.WARNING)
+# logging.getLogger('s3transfer').setLevel(logging.CRITICAL)
+# logging.getLogger('urllib3').setLevel(logging.CRITICAL)
+
 
 logging.debug("Started logging in data_plugin.py".format())
 
