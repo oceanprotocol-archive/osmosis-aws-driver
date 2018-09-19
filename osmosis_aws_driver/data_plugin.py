@@ -35,17 +35,18 @@ formatter = logging.Formatter(FORMAT, DATE_FMT)
 handler = logging.StreamHandler(sys.stderr)
 handler.setFormatter(formatter)
 logger.handlers = [handler]
-################################### SETUP LOGGING! ###################################
-
-
-# logging.getLogger('boto3').setLevel(logging.WARNING)
-# logging.getLogger('botocore').setLevel(logging.WARNING)
-# logging.getLogger('nose').setLevel(logging.WARNING)
-# logging.getLogger('s3transfer').setLevel(logging.CRITICAL)
-# logging.getLogger('urllib3').setLevel(logging.CRITICAL)
-
 
 logging.debug("Started logging in data_plugin.py".format())
+################################### SETUP LOGGING! ###################################
+
+# Suppress external modules, unless debugging errors
+if 1:
+    logging.getLogger('boto3').setLevel(logging.WARNING)
+    logging.getLogger('botocore').setLevel(logging.WARNING)
+    logging.getLogger('nose').setLevel(logging.WARNING)
+    logging.getLogger('s3transfer').setLevel(logging.WARNING)
+    logging.getLogger('urllib3').setLevel(logging.WARNING)
+
 
 class Plugin(AbstractPlugin):
     """
@@ -54,8 +55,10 @@ class Plugin(AbstractPlugin):
         """Initialize a :class:`~.Plugin`.
         """
         self.logger = logging.getLogger('Plugin')
-        logging.basicConfig(level=logging.INFO)
+        #self.logger.basicConfig(level=logging.INFO)
         self.s3 = boto3.client('s3')
+        self.logger.debug("S3 client: {}".format(self.s3))
+
         """ :type : pyboto3.s3 """
         self.s3meta = boto3.resource('s3')
 
@@ -112,6 +115,7 @@ class Plugin(AbstractPlugin):
 
         """
         self.copy(local_file, remote_file)
+        self.logger.debug("Uploaded {} to {}".format(local_file, remote_file))
 
     def download(self, remote_file, local_file):
         """Download file from a remote resource manager
@@ -122,6 +126,8 @@ class Plugin(AbstractPlugin):
              :exc:`~..OsmosisError`: if the file is not downloaded correctly.
         """
         self.copy(remote_file, local_file)
+        self.logger.debug("Downloaded {} to {}".format(remote_file,local_file))
+
 
     def list(self, remote_folder):
         """List all the files of a cloud directory.
@@ -132,6 +138,8 @@ class Plugin(AbstractPlugin):
         Raises:
              :exc:`~..OsmosisError`: if the directory does not exist.
         """
+        self.logger.debug("Retrieving items in {}".format(remote_folder))
+
         bucket, path = self.parse_s3_path(remote_folder)
         try:
             paginator = self.s3.get_paginator('list_objects_v2')
@@ -258,7 +266,7 @@ class Plugin(AbstractPlugin):
             response = self.s3.list_buckets()
             return response['Buckets']
         except Exception:
-            logging.error(f"Error listing buckets")
+            self.logger.error(f"Error listing buckets")
             raise OsmosisError
 
     def create_directory(self, remote_folder):
