@@ -61,13 +61,16 @@ def test_complete():
     s3_plugin.create_directory(f's3://{bucket_name}/test')
 
     # List buckets
-    s3_plugin.list_buckets()
+    buckets = s3_plugin.list_buckets()
+    print("Buckets")
+    for i,b in enumerate(buckets):
+        print('\t',i,b)
 
     # Upload a file
     s3_plugin.upload('./LICENSE', f's3://{bucket_name}/test/LICENSE')
     files = s3_plugin.list(f's3://{bucket_name}/test/')
     print(f'Files in bucket {bucket_name}')
-    for f in files:
+    for i,f in enumerate(files):
         print('\t',f)
     assert len(files) == 2  # /test and /test/LICENSE
     assert files[0]['Key'] == 'test/'

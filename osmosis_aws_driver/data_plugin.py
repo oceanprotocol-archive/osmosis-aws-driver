@@ -157,8 +157,14 @@ class S3_Plugin(AbstractPlugin):
             raise OsmosisError
 
     def list_buckets(self):
+        response = s3_client.list_buckets()
+        logging.debug("Found {} buckets".format(len(response['Buckets'])))
 
-        raise
+        for bucket in response['Buckets']:
+            print(bucket['Name'])
+            # print(bucket.name)
+
+        return esponse['Buckets']
 
     def copy(self, source_path: str, dest_path: str):
         """Copy file from a path to another path.
