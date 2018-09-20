@@ -3,13 +3,16 @@ from osmosis_aws_driver.data_plugin import S3_Plugin
 from filecmp import cmp
 import os
 import time
+from osmosis_aws_driver.config_parser import load_config_section
 
 # os.environ['AWS_PROFILE'] = 'ocean'
-aws = Osmosis('./tests/aws.ini').data_plugin()
+# Why was this needed???
+#aws = Osmosis('./tests/aws.ini').data_plugin()
 
 
-def test_plugin_type():
-    assert aws.type == 'AWS'
+
+# def test_plugin_type():
+#     assert aws.type == 'AWS'
 
 
 def test_complete():
