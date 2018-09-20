@@ -42,9 +42,18 @@ def test_complete():
     # TODO: Add finally to clean s3 bucket
 
     #config = load_config_section(file_path='aws.ini', section='S3')
-    path_config = 'aws.ini'
-    assert os.path.exists(path_config)
-    config = load_config_section(file_path=path_config, section='S3')
+
+    # Get the configuration from file, OR from environment
+    path_config = ''
+    #path_config = 'aws.ini'
+
+    if os.path.exists(path_config):
+        config = load_config_section(file_path=path_config, section='S3')
+    else:
+        config = dict()
+        config['module'] = os.environ['AWS_S3_MODULE']
+        config['module.path'] = os.environ['AWS_S3_PATH']
+        config['region'] = os.environ['AWS_S3_REGION']
 
     dpl = S3_Plugin(config)
 

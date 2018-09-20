@@ -14,3 +14,7 @@ deploy:
     tags: true
     repo: oceanprotocol/osmosis-aws-driver
     python: 3.6
+env:
+  - AWS_S3_MODULE=aws
+  - AWS_S3_PATH=./osmosis_aws_driver
+  - AWS_S3_REGION=eu-central-1
