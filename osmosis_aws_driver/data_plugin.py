@@ -51,6 +51,8 @@ class S3_Plugin(AbstractPlugin):
     """
     def __init__(self, config=None):
         """Initialize a :class:`~.Plugin`.
+        Args:
+             config(dict): Configuration options
         """
         assert config, "Must specify a configuration dictionary"
 
@@ -154,6 +156,10 @@ class S3_Plugin(AbstractPlugin):
         except Exception as e:
             raise OsmosisError
 
+    def list_buckets(self):
+
+        raise
+
     def copy(self, source_path: str, dest_path: str):
         """Copy file from a path to another path.
          Args:
@@ -223,6 +229,8 @@ class S3_Plugin(AbstractPlugin):
             self.s3.delete_object(Bucket=bucket, Key=path)
         except Exception as e:
             raise OsmosisError
+        self.logger.debug("Deleted {} from {}".format(path,bucket))
+
 
     def create_bucket(self, bucket):
         """Create a bucket in S3
@@ -243,6 +251,8 @@ class S3_Plugin(AbstractPlugin):
             except Exception:
                 logging.error(f"Error creating bucket {bucket} in region {self.aws_region}")
                 raise OsmosisError
+        self.logger.debug("Created bucket {}".format(bucket))
+
 
     def delete_bucket(self, bucket_name):
         """Delete a bucket in S3
@@ -260,6 +270,7 @@ class S3_Plugin(AbstractPlugin):
         except Exception:
             logging.error(f"Error deleting bucket {bucket_name} in region {self.location}")
             raise OsmosisError
+        self.logger.debug("Deleted bucket {}".format(bucket_name))
 
     def list_buckets(self):
         """List the S3 buckets

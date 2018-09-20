@@ -53,23 +53,37 @@ def test_complete():
         config['module.path'] = os.environ['AWS_S3_PATH']
         config['region'] = os.environ['AWS_S3_REGION']
 
-    dpl = S3_Plugin(config)
+    s3_plugin = S3_Plugin(config)
 
+    # Create bucket
     bucket_name=f'ocean-test-osmosis-data-plugin-{int(time.time())}'
     print(f'Test bucket: {bucket_name}')
-    dpl.create_directory(f's3://{bucket_name}/test')
-    dpl.upload('./LICENSE', f's3://{bucket_name}/test/LICENSE')
-    files = dpl.list(f's3://{bucket_name}/test/')
+    s3_plugin.create_directory(f's3://{bucket_name}/test')
+
+    # List buckets
+    s3_plugin.list_buckets()
+
+    # Upload a file
+    s3_plugin.upload('./LICENSE', f's3://{bucket_name}/test/LICENSE')
+    files = s3_plugin.list(f's3://{bucket_name}/test/')
+    print(f'Files in bucket {bucket_name}')
+    for f in files:
+        print('\t',f)
     assert len(files) == 2  # /test and /test/LICENSE
     assert files[0]['Key'] == 'test/'
     assert files[1]['Key'] == 'test/LICENSE'
-    dpl.download(f's3://{bucket_name}/test/LICENSE', '/tmp/test_osmosis_data_plugin_license')
+
+    # Download a file
+    s3_plugin.download(f's3://{bucket_name}/test/LICENSE', '/tmp/test_osmosis_data_plugin_license')
     assert cmp('./LICENSE', '/tmp/test_osmosis_data_plugin_license')
-    dpl.delete(f's3://{bucket_name}/test/LICENSE')
-    files = dpl.list(f's3://{bucket_name}/test/')
+
+    # Delete the file
+    s3_plugin.delete(f's3://{bucket_name}/test/LICENSE')
+    files = s3_plugin.list(f's3://{bucket_name}/test/')
     assert len(files) == 1
     assert files[0]['Key'] == 'test/'
-    dpl.delete_bucket(bucket_name)
 
+    # Delete the bucket
+    s3_plugin.delete_bucket(bucket_name)
 
 #test_complete()
