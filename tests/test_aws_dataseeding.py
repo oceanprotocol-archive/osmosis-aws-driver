@@ -43,7 +43,7 @@ def test_complete(caplog):
 
     config = load_config_section(file_path='aws_datascience.ini', section='S3')
 
-    dpl = S3_Plugin()
+    dpl = S3_Plugin(config)
     bucket_name=f'ocean-test-osmosis-data-plugin-dataseeding-{int(time.time())}'
     dpl.create_directory(f's3://{bucket_name}/test')
     dpl.upload('./LICENSE', f's3://{bucket_name}/test/LICENSE')

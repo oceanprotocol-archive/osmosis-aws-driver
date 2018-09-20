@@ -54,20 +54,21 @@ class S3_Plugin(AbstractPlugin):
         """Initialize a :class:`~.Plugin`.
         """
         assert config, "Must specify a configuration dictionary"
-        assert aws_region, "Must specify a region"
 
+        # Assign the region
+        assert config['region'], "Must specify a region"
+        self.aws_region = config['region']
+
+        # Logging for this class
         self.logger = logging.getLogger('Plugin')
-        #self.logger.basicConfig(level=logging.INFO)
+
+        # The S3 client object
         self.s3 = boto3.client('s3')
-        self.logger.debug("S3 client: {}".format(self.s3))
 
         """ :type : pyboto3.s3 """
         self.s3meta = boto3.resource('s3')
 
-        #self.location = os.getenv('AWS_DEFAULT_REGION', 'eu-central-1')
-        #self.location = os.getenv('AWS_DEFAULT_REGION', 'eu-central-1')
-        self.aws_region = aws_region
-        self.logger.debug("Created a new S3 plugin object in region: {}".format(self.location))
+        self.logger.debug("Created a new S3 plugin object in region: {}".format(self.aws_region))
 
     @property
     def type(self):
@@ -239,7 +240,7 @@ class S3_Plugin(AbstractPlugin):
                     self.s3.create_bucket(Bucket=bucket,
                                           CreateBucketConfiguration={'LocationConstraint': self.location})
             except Exception:
-                logging.error(f"Error creating bucket {bucket} in region {self.location}")
+                logging.error(f"Error creating bucket {bucket} in region {self.aws_region}")
                 raise OsmosisError
 
     def delete_bucket(self, bucket_name):
