@@ -1,5 +1,5 @@
 from osmosis_driver_interface.osmosis import Osmosis
-from osmosis_aws_driver.data_plugin import S3_Plugin
+from osmosis_aws_driver.data_S3_plugin import S3_Plugin
 from filecmp import cmp
 import os, sys
 import time
