@@ -39,7 +39,7 @@ logging.debug("Started logging in data_plugin.py".format())
 ################################### SETUP LOGGING! ###################################
 
 # Suppress external modules, unless debugging errors
-if 1:
+if 0:
     logging.getLogger('boto3').setLevel(logging.WARNING)
     logging.getLogger('botocore').setLevel(logging.WARNING)
     logging.getLogger('nose').setLevel(logging.WARNING)
@@ -55,7 +55,7 @@ class S3_Plugin(AbstractPlugin):
         """
         assert config, "Must specify a configuration dictionary"
 
-        # Assign the region
+        # Assert the region
         assert config['region'], "Must specify a region"
         self.aws_region = config['region']
 
@@ -63,7 +63,9 @@ class S3_Plugin(AbstractPlugin):
         self.logger = logging.getLogger('Plugin')
 
         # The S3 client object
+        #self.s3 = boto3.client('s3', region_name=self.aws_region)
         self.s3 = boto3.client('s3')
+        assert self.aws_region == self.s3.meta.config.region_name
 
         """ :type : pyboto3.s3 """
         self.s3meta = boto3.resource('s3')
@@ -234,11 +236,11 @@ class S3_Plugin(AbstractPlugin):
             self.s3meta.meta.client.head_bucket(Bucket=bucket)
         except botocore.exceptions.ClientError:
             try:
-                if self.location == 'us-east-1':
-                    self.s3.create_bucket(Bucket=bucket)
-                else:
-                    self.s3.create_bucket(Bucket=bucket,
-                                          CreateBucketConfiguration={'LocationConstraint': self.location})
+                #if self.location == 'us-east-1':
+                #    self.s3.create_bucket(Bucket=bucket)
+                #else:
+                self.s3.create_bucket(Bucket=bucket,
+                                      CreateBucketConfiguration={'LocationConstraint': self.aws_region})
             except Exception:
                 logging.error(f"Error creating bucket {bucket} in region {self.aws_region}")
                 raise OsmosisError
