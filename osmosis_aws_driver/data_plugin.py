@@ -39,13 +39,12 @@ logging.debug("Started logging in data_plugin.py".format())
 ################################### SETUP LOGGING! ###################################
 
 # Suppress external modules, unless debugging errors
-if 0:
+if 1:
     logging.getLogger('boto3').setLevel(logging.WARNING)
     logging.getLogger('botocore').setLevel(logging.WARNING)
     logging.getLogger('nose').setLevel(logging.WARNING)
     logging.getLogger('s3transfer').setLevel(logging.WARNING)
     logging.getLogger('urllib3').setLevel(logging.WARNING)
-
 
 class S3_Plugin(AbstractPlugin):
     """
