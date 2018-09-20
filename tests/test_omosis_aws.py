@@ -41,8 +41,6 @@ def test_complete():
     # Create folder, upload file, list files, download file, delete file
     # TODO: Add finally to clean s3 bucket
 
-    #config = load_config_section(file_path='aws.ini', section='S3')
-
     # Get the configuration from file, OR from environment
     path_config = ''
     #path_config = 'aws.ini'
@@ -57,7 +55,6 @@ def test_complete():
 
     dpl = S3_Plugin(config)
 
-    #dpl = S3_Plugin()
     bucket_name=f'ocean-test-osmosis-data-plugin-{int(time.time())}'
     print(f'Test bucket: {bucket_name}')
     dpl.create_directory(f's3://{bucket_name}/test')
