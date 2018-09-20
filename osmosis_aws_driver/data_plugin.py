@@ -64,7 +64,7 @@ class S3_Plugin(AbstractPlugin):
         # The S3 client object
         #self.s3 = boto3.client('s3', region_name=self.aws_region)
         self.s3 = boto3.client('s3')
-        assert self.aws_region == self.s3.meta.config.region_name
+        assert self.aws_region == self.s3.meta.config.region_name, f"{self.aws_region} != {self.s3.meta.config.region_name}".format()
 
         """ :type : pyboto3.s3 """
         self.s3meta = boto3.resource('s3')

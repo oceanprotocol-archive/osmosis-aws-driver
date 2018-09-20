@@ -19,7 +19,10 @@ def test_complete():
     # Create folder, upload file, list files, download file, delete file
     # TODO: Add finally to clean s3 bucket
 
-    config = load_config_section(file_path='aws.ini', section='S3')
+    #config = load_config_section(file_path='aws.ini', section='S3')
+    path_config = 'aws.ini'
+    assert os.path.exists(path_config)
+    config = load_config_section(file_path=path_config, section='S3')
 
     dpl = S3_Plugin(config)
 
@@ -41,4 +44,4 @@ def test_complete():
     dpl.delete_bucket(bucket_name)
 
 
-test_complete()
+#test_complete()
