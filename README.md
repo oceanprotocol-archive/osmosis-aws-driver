@@ -13,12 +13,20 @@
 ---
 ## Table of Contents
 
+  - [Quickstart](#quickstart)
   - [Code style](#code-style)
   - [Testing](#testing)
   - [New Version](#new-version)
   - [License](#license)
 
 ---
+
+## Quickstart
+
+The application interacts with AWS API using boto3 library, so you need to configure your system in order to boto3 can
+login as described in https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html.
+At the moment there is only a first implementation for the data_plugin, but in the future is going to be an instance
+for the computing plugin as well.
 
 ## Code style
 

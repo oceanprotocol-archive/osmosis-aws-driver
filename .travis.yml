@@ -1,7 +1,6 @@
 language: python
 python:
   - 3.6
-  - 3.5
 
 # Command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: pip install -U tox-travis
@@ -9,9 +8,8 @@ script: tox
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel
-  user: leucothia
-  password:
-    secure:
+  user: ${PYPI_USER}
+  password: ${PYPI_PASSWORD}
   on:
     tags: true
     repo: oceanprotocol/osmosis-aws-driver
