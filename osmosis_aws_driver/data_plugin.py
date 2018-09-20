@@ -7,7 +7,6 @@ from osmosis_driver_interface.data_plugin import AbstractPlugin
 from osmosis_driver_interface.exceptions import OsmosisError
 import sys
 
-
 # THIS IS DISABLED FOR NOW!
 #from osmosis_aws_driver.log import setup_logging
 #setup_logging()
@@ -48,12 +47,15 @@ if 1:
     logging.getLogger('urllib3').setLevel(logging.WARNING)
 
 
-class Plugin(AbstractPlugin):
+class S3_Plugin(AbstractPlugin):
     """
     """
     def __init__(self, config=None):
         """Initialize a :class:`~.Plugin`.
         """
+        assert config, "Must specify a configuration dictionary"
+        assert aws_region, "Must specify a region"
+
         self.logger = logging.getLogger('Plugin')
         #self.logger.basicConfig(level=logging.INFO)
         self.s3 = boto3.client('s3')
@@ -62,7 +64,9 @@ class Plugin(AbstractPlugin):
         """ :type : pyboto3.s3 """
         self.s3meta = boto3.resource('s3')
 
-        self.location = os.getenv('AWS_DEFAULT_REGION', 'eu-central-1')
+        #self.location = os.getenv('AWS_DEFAULT_REGION', 'eu-central-1')
+        #self.location = os.getenv('AWS_DEFAULT_REGION', 'eu-central-1')
+        self.aws_region = aws_region
         self.logger.debug("Created a new S3 plugin object in region: {}".format(self.location))
 
     @property

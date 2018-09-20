@@ -1,5 +1,5 @@
 from osmosis_driver_interface.osmosis import Osmosis
-from osmosis_aws_driver.data_plugin import Plugin
+from osmosis_aws_driver.data_plugin import S3_Plugin
 from filecmp import cmp
 import os
 import time
@@ -15,7 +15,7 @@ def test_plugin_type():
 def test_complete():
     # Create folder, upload file, list files, download file, delete file
     # TODO: Add finally to clean s3 bucket
-    dpl = Plugin()
+    dpl = S3_Plugin()
     bucket_name=f'ocean-test-osmosis-data-plugin-{int(time.time())}'
     print(f'Test bucket: {bucket_name}')
     dpl.create_directory(f's3://{bucket_name}/test')

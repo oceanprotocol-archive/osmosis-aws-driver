@@ -1,10 +1,12 @@
 from osmosis_driver_interface.osmosis import Osmosis
-from osmosis_aws_driver.data_plugin import Plugin
+from osmosis_aws_driver.data_plugin import S3_Plugin
 from filecmp import cmp
 import os
 import logging
 import time
 import sys
+from osmosis_aws_driver.config_parser import load_config_section
+
 
 logger = logging.getLogger(__name__)
 
@@ -33,13 +35,15 @@ logger.debug("Started logging in test module".format())
 ################################### SETUP LOGGING! ###################################
 
 # os.environ['AWS_PROFILE'] = 'ocean'
-aws = Osmosis('./tests/aws.ini').data_plugin()
-logging.debug("AWS Osmosis object created {}".format(aws))
+#aws = Osmosis('./tests/aws.ini').data_plugin()
+#logging.debug("AWS Osmosis object created {}".format(aws))
 
 def test_complete(caplog):
     caplog.set_level(logging.DEBUG)
 
-    dpl = Plugin()
+    config = load_config_section(file_path='aws_datascience.ini', section='S3')
+
+    dpl = S3_Plugin()
     bucket_name=f'ocean-test-osmosis-data-plugin-dataseeding-{int(time.time())}'
     dpl.create_directory(f's3://{bucket_name}/test')
     dpl.upload('./LICENSE', f's3://{bucket_name}/test/LICENSE')
