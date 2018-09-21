@@ -29,30 +29,24 @@ logger.handlers = [handler]
 logger.debug("Started logging in test module".format())
 ################################### SETUP LOGGING! ###################################
 
-# Why was this needed???
-
-# os.environ['AWS_PROFILE'] = 'ocean'
-#aws = Osmosis('./tests/aws.ini').data_plugin()
-# def test_plugin_type():
-#     assert aws.type == 'AWS'
-
-
 def test_complete():
     # Create folder, upload file, list files, download file, delete file
     # TODO: Add finally to clean s3 bucket
 
-    # Get the configuration from file, OR from environment
-    path_config = ''
-    #path_config = 'aws.ini'
+    # # Get the configuration from file, OR from environment
+    # path_config = ''
+    # path_config = 'aws.ini'
+    # try:
+    #     config = dict()
+    #     config['region'] = os.environ['AWS_S3_REGION']
+    # except:
+    #     if
+    #
+    # #if os.path.exists(path_config):
+    # #    config = load_config_section(file_path=path_config, section='S3')
+    # #else:
 
-    if os.path.exists(path_config):
-        config = load_config_section(file_path=path_config, section='S3')
-    else:
-        config = dict()
-        #config['module'] = os.environ['AWS_S3_MODULE']
-        #config['module.path'] = os.environ['AWS_S3_PATH']
-        config['region'] = os.environ['AWS_S3_REGION']
-
+    config = dict() #
     s3_plugin = S3_Plugin(config)
 
     # Create bucket

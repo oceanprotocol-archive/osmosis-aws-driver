@@ -28,6 +28,10 @@ login as described in https://boto3.amazonaws.com/v1/documentation/api/latest/gu
 At the moment there is only a first implementation for the data_plugin, but in the future is going to be an instance
 for the computing plugin as well.
 
+boto3 is used to manage the credentials. Therefore, no configuration options need to be specified in the config dictionary.
+
+boto3 will load the credentials from your system [(see the boto documentation)](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html).
+
 ## Code style
 
 The information about code style in python is documented in this two links [python-developer-guide](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/development/python-developer-guide.md)

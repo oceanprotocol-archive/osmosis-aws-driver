@@ -54,22 +54,23 @@ class S3_Plugin(AbstractPlugin):
         Args:
              config(dict): Configuration options
         """
-        assert config, "Must specify a configuration dictionary"
+        #assert config, "Must specify a configuration dictionary"
 
         # Assert the region
-        assert config['region'], "Must specify a region"
-        self.aws_region = config['region']
+        #assert config['region'], "Must specify a region"
+        #self.aws_region = config['region']
 
         # Logging for this class
         self.logger = logging.getLogger('Plugin')
 
         # The S3 client object
         #self.s3 = boto3.client('s3', region_name=self.aws_region)
-        self.s3 = boto3.client('s3')
-        assert self.aws_region == self.s3.meta.config.region_name, f"{self.aws_region} != {self.s3.meta.config.region_name}".format()
-
+        self.s3_client = boto3.client('s3')
+        #assert self.aws_region == self.s3.meta.config.region_name, f"{self.aws_region} != {self.s3.meta.config.region_name}".format()
+        self.aws_region = self.s3_client.meta.config.region_name
+        print("---", self.s3_client.meta.config.region_name)
         """ :type : pyboto3.s3 """
-        self.s3meta = boto3.resource('s3')
+        self.s3_resource = boto3.resource('s3')
 
         self.logger.debug("Created a new S3 plugin object in region: {}".format(self.aws_region))
 
@@ -150,7 +151,7 @@ class S3_Plugin(AbstractPlugin):
 
         bucket, path = self.parse_s3_path(remote_folder)
         try:
-            paginator = self.s3.get_paginator('list_objects_v2')
+            paginator = self.s3_client.get_paginator('list_objects_v2')
             page_iterator = paginator.paginate(Bucket=bucket, Delimiter='/', Prefix=path)
             return page_iterator.build_full_result()['Contents']
         except Exception as e:
@@ -164,7 +165,7 @@ class S3_Plugin(AbstractPlugin):
             print(bucket['Name'])
             # print(bucket.name)
 
-        return esponse['Buckets']
+        return response['Buckets']
 
     def copy(self, source_path: str, dest_path: str):
         """Copy file from a path to another path.
@@ -191,7 +192,7 @@ class S3_Plugin(AbstractPlugin):
             path = source_path[5:].split('/', 1)[1]
             try:
                 # src_file = self.s3.Object(bucket, path).load()
-                self.s3meta.meta.client.download_file(bucket, path, dest_path)
+                self.s3_resource.meta.client.download_file(bucket, path, dest_path)
             except botocore.exceptions.ClientError as e:
                 if e.response['Error']['Code'] == "404":
                     self.logger.error(f"Source file {path} in bucket {bucket} not found")
@@ -206,7 +207,7 @@ class S3_Plugin(AbstractPlugin):
             path = dest_path[5:].split('/', 1)[1]
             try:
                 # self.s3meta.meta.client.head_bucket(Bucket=bucket)
-                self.s3meta.meta.client.upload_file(source_path, bucket, path)
+                self.s3_resource.meta.client.upload_file(source_path, bucket, path)
             except botocore.exceptions.ClientError:
                 # self.logger.error("The destination bucket {} does not exist or you have no access".format(bucket))
                 self.logger.error(
@@ -232,7 +233,7 @@ class S3_Plugin(AbstractPlugin):
 
         bucket, path = self.parse_s3_path(remote_file)
         try:
-            self.s3.delete_object(Bucket=bucket, Key=path)
+            self.s3_client.delete_object(Bucket=bucket, Key=path)
         except Exception as e:
             raise OsmosisError
         self.logger.debug("Deleted {} from {}".format(path,bucket))
@@ -246,14 +247,14 @@ class S3_Plugin(AbstractPlugin):
              :exc:`~..OsmosisError`
         """
         try:
-            self.s3meta.meta.client.head_bucket(Bucket=bucket)
+            self.s3_resource.meta.client.head_bucket(Bucket=bucket)
         except botocore.exceptions.ClientError:
             try:
                 #if self.location == 'us-east-1':
                 #    self.s3.create_bucket(Bucket=bucket)
                 #else:
-                self.s3.create_bucket(Bucket=bucket,
-                                      CreateBucketConfiguration={'LocationConstraint': self.aws_region})
+                self.s3_client.create_bucket(Bucket=bucket,
+                                             CreateBucketConfiguration={'LocationConstraint': self.aws_region})
             except Exception:
                 logging.error(f"Error creating bucket {bucket} in region {self.aws_region}")
                 raise OsmosisError
@@ -268,8 +269,8 @@ class S3_Plugin(AbstractPlugin):
              :exc:`~..OsmosisError`
         """
         try:
-            self.s3meta.meta.client.head_bucket(Bucket=bucket_name)
-            bucket = self.s3meta.Bucket(bucket_name)
+            self.s3_resource.meta.client.head_bucket(Bucket=bucket_name)
+            bucket = self.s3_resource.Bucket(bucket_name)
             for key in bucket.objects.all():
                 key.delete()
             bucket.delete()
@@ -286,7 +287,7 @@ class S3_Plugin(AbstractPlugin):
              :exc:`~..OsmosisError`
         """
         try:
-            response = self.s3.list_buckets()
+            response = self.s3_client.list_buckets()
             return response['Buckets']
         except Exception:
             self.logger.error(f"Error listing buckets")
@@ -306,7 +307,7 @@ class S3_Plugin(AbstractPlugin):
         path = path + '/' if not path.endswith('/') else path
         try:
             self.create_bucket(bucket)
-            self.s3.put_object(Bucket=bucket, Body='', Key=path)
+            self.s3_client.put_object(Bucket=bucket, Body='', Key=path)
         except Exception:
             raise OsmosisError
 
