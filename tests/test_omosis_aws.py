@@ -33,18 +33,6 @@ def test_complete():
     # Create folder, upload file, list files, download file, delete file
     # TODO: Add finally to clean s3 bucket
 
-    # # Get the configuration from file, OR from environment
-    # path_config = ''
-    # path_config = 'aws.ini'
-    # try:
-    #     config = dict()
-    #     config['region'] = os.environ['AWS_S3_REGION']
-    # except:
-    #     if
-    #
-    # #if os.path.exists(path_config):
-    # #    config = load_config_section(file_path=path_config, section='S3')
-    # #else:
 
     config = dict() #
     s3_plugin = S3_Plugin(config)

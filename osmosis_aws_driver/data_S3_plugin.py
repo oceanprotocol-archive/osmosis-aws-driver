@@ -1,6 +1,3 @@
-import logging
-import os
-
 import boto3
 import botocore
 from osmosis_driver_interface.data_plugin import AbstractPlugin
@@ -50,26 +47,26 @@ class S3_Plugin(AbstractPlugin):
     """
     """
     def __init__(self, config=None):
-        """Initialize a :class:`~.Plugin`.
+        """Initialize a :class:`~.S3_Plugin`.
+
+        The S3_plugin is a wrapper around the boto3 S3 client and resource API.
+
+        Configuration of the AWS credentials is handled by boto3 according to the user's environment.
+
         Args:
              config(dict): Configuration options
         """
+        # configuration dictionary not needed at this current state
         #assert config, "Must specify a configuration dictionary"
-
-        # Assert the region
-        #assert config['region'], "Must specify a region"
-        #self.aws_region = config['region']
 
         # Logging for this class
         self.logger = logging.getLogger('Plugin')
 
         # The S3 client object
-        #self.s3 = boto3.client('s3', region_name=self.aws_region)
         self.s3_client = boto3.client('s3')
-        #assert self.aws_region == self.s3.meta.config.region_name, f"{self.aws_region} != {self.s3.meta.config.region_name}".format()
         self.aws_region = self.s3_client.meta.config.region_name
-        print("---", self.s3_client.meta.config.region_name)
-        """ :type : pyboto3.s3 """
+
+        # The S# resource object
         self.s3_resource = boto3.resource('s3')
 
         self.logger.debug("Created a new S3 plugin object in region: {}".format(self.aws_region))
