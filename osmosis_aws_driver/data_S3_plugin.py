@@ -235,6 +235,9 @@ class S3_Plugin(AbstractPlugin):
             raise OsmosisError
         self.logger.debug("Deleted {} from {}".format(path,bucket))
 
+    def get_bucket(self, bucketname):
+        #TODO: add
+        pass
 
     def create_bucket(self, bucket):
         """Create a bucket in S3
