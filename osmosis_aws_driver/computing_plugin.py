@@ -3,7 +3,8 @@ from osmosis_driver_interface.computing_plugin import AbstractPlugin
 
 class Plugin(AbstractPlugin):
     def type(self):
-        pass
+        """str: the type of this plugin (``'AWS'``)"""
+        return 'AWS'
 
     def create_vm(self):
         pass
@@ -18,6 +19,12 @@ class Plugin(AbstractPlugin):
         pass
 
     def delete_vm(self, instance_name):
+        pass
+
+    def status_vm(self, instance_name):
+        pass
+
+    def copy(self, instance_name, source_path, dest_path):
         pass
 
     def retrieve_computation_proof(self):
