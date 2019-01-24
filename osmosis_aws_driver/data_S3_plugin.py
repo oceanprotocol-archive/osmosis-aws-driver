@@ -228,7 +228,6 @@ class S3_Plugin(AbstractPlugin):
                 'Key': path
             }
         )
-        print(self.aws_region)
         return url
 
     def delete(self, remote_file):
