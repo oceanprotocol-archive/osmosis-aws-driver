@@ -1,4 +1,4 @@
-from osmosis_aws_driver.data_S3_plugin import S3_Plugin
+from osmosis_aws_driver.data_plugin import S3_Plugin
 import requests
 
 

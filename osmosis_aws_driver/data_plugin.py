@@ -32,7 +32,7 @@ handler = logging.StreamHandler(sys.stderr)
 handler.setFormatter(formatter)
 logger.handlers = [handler]
 
-logging.debug("Started logging in data_S3_plugin.py".format())
+logging.debug("Started logging in data_plugin.py".format())
 ################################### SETUP LOGGING! ###################################
 
 # Suppress external modules, unless debugging errors

@@ -3,7 +3,7 @@ import sys
 import time
 from filecmp import cmp
 
-from osmosis_aws_driver.data_S3_plugin import S3_Plugin
+from osmosis_aws_driver.data_plugin import S3_Plugin
 
 ################################### SETUP LOGGING! ###################################
 loggers_dict = logging.Logger.manager.loggerDict
