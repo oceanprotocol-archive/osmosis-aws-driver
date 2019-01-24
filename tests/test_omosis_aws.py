@@ -3,7 +3,7 @@ import sys
 import time
 from filecmp import cmp
 
-from osmosis_aws_driver.data_plugin import S3_Plugin
+from osmosis_aws_driver.data_plugin import Plugin
 
 ################################### SETUP LOGGING! ###################################
 loggers_dict = logging.Logger.manager.loggerDict
@@ -35,7 +35,7 @@ def test_complete():
     # TODO: Add finally to clean s3 bucket
 
     config = dict()  #
-    s3_plugin = S3_Plugin(config)
+    s3_plugin = Plugin(config)
 
     # Create bucket
     bucket_name = f'ocean-test-osmosis-data-plugin-{int(time.time())}'
