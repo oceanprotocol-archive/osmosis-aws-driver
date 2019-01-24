@@ -44,7 +44,7 @@ if 1:
     logging.getLogger('urllib3').setLevel(logging.WARNING)
 
 
-class S3_Plugin(AbstractPlugin):
+class Plugin(AbstractPlugin):
     """
     """
 
