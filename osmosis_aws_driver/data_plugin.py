@@ -218,12 +218,15 @@ class Plugin(AbstractPlugin):
              :exc:`~..OsmosisError`: if the file does not exist or if the action could not be done.
         """
         bucket, path = self.parse_s3_path(remote_file)
-        url = self.s3_client.generate_presigned_url(
+        region = self.s3_client.get_bucket_location(Bucket=bucket)['LocationConstraint']
+        sign_client = boto3.client('s3', region_name=region)
+        url = sign_client.generate_presigned_url(
             ClientMethod='get_object',
             Params={
                 'Bucket': bucket,
                 'Key': path
-            }
+            },
+            ExpiresIn=3600 * 24  # 1day
         )
         return url
 
