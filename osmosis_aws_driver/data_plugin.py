@@ -1,47 +1,13 @@
 import logging
-import sys
 
 import boto3
 import botocore
 from osmosis_driver_interface.data_plugin import AbstractPlugin
 from osmosis_driver_interface.exceptions import OsmosisError
 
-# THIS IS DISABLED FOR NOW!
-# from osmosis_aws_driver.log import setup_logging
-# setup_logging()
+from osmosis_aws_driver.log import setup_logging
 
-################################### SETUP LOGGING! ###################################
-loggers_dict = logging.Logger.manager.loggerDict
-
-logger = logging.getLogger()
-logger.handlers = []
-
-# Set level
-logger.setLevel(logging.DEBUG)
-
-# Create formatter
-
-FORMAT = "%(asctime)s - %(levelno)s - %(name)-25s -  %(module)-20s - %(funcName)-20s - %(message)s"
-# FORMAT = "%(asctime)s L%(levelno)s: %(message)s"
-
-DATE_FMT = "%Y-%m-%d %H:%M:%S"
-formatter = logging.Formatter(FORMAT, DATE_FMT)
-
-# Create handler and assign
-handler = logging.StreamHandler(sys.stderr)
-handler.setFormatter(formatter)
-logger.handlers = [handler]
-
-logging.debug("Started logging in data_plugin.py".format())
-################################### SETUP LOGGING! ###################################
-
-# Suppress external modules, unless debugging errors
-if 1:
-    logging.getLogger('boto3').setLevel(logging.WARNING)
-    logging.getLogger('botocore').setLevel(logging.WARNING)
-    logging.getLogger('nose').setLevel(logging.WARNING)
-    logging.getLogger('s3transfer').setLevel(logging.WARNING)
-    logging.getLogger('urllib3').setLevel(logging.WARNING)
+setup_logging()
 
 
 class Plugin(AbstractPlugin):
