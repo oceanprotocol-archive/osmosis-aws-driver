@@ -1,51 +1,16 @@
+import logging
+
 import boto3
 import botocore
 from osmosis_driver_interface.data_plugin import AbstractPlugin
 from osmosis_driver_interface.exceptions import OsmosisError
-import sys
 
-# THIS IS DISABLED FOR NOW!
-#from osmosis_aws_driver.log import setup_logging
-#setup_logging()
+from osmosis_aws_driver.log import setup_logging
 
-import logging
+setup_logging()
 
-################################### SETUP LOGGING! ###################################
-loggers_dict = logging.Logger.manager.loggerDict
 
-logger = logging.getLogger()
-logger.handlers = []
-
-# Set level
-logger.setLevel(logging.DEBUG)
-
-# Create formatter
-
-FORMAT = "%(asctime)s - %(levelno)s - %(name)-25s -  %(module)-20s - %(funcName)-20s - %(message)s"
-#FORMAT = "%(asctime)s L%(levelno)s: %(message)s"
-
-DATE_FMT = "%Y-%m-%d %H:%M:%S"
-formatter = logging.Formatter(FORMAT, DATE_FMT)
-
-# Create handler and assign
-handler = logging.StreamHandler(sys.stderr)
-handler.setFormatter(formatter)
-logger.handlers = [handler]
-
-logging.debug("Started logging in data_S3_plugin.py".format())
-################################### SETUP LOGGING! ###################################
-
-# Suppress external modules, unless debugging errors
-if 1:
-    logging.getLogger('boto3').setLevel(logging.WARNING)
-    logging.getLogger('botocore').setLevel(logging.WARNING)
-    logging.getLogger('nose').setLevel(logging.WARNING)
-    logging.getLogger('s3transfer').setLevel(logging.WARNING)
-    logging.getLogger('urllib3').setLevel(logging.WARNING)
-
-class S3_Plugin(AbstractPlugin):
-    """
-    """
+class Plugin(AbstractPlugin):
     def __init__(self, config=None):
         """Initialize a :class:`~.S3_Plugin`.
 
@@ -57,7 +22,7 @@ class S3_Plugin(AbstractPlugin):
              config(dict): Configuration options
         """
         # configuration dictionary not needed at this current state
-        #assert config, "Must specify a configuration dictionary"
+        # assert config, "Must specify a configuration dictionary"
 
         # Logging for this class
         self.logger = logging.getLogger('Plugin')
@@ -132,8 +97,7 @@ class S3_Plugin(AbstractPlugin):
              :exc:`~..OsmosisError`: if the file is not downloaded correctly.
         """
         self.copy(remote_file, local_file)
-        self.logger.debug("Downloaded {} to {}".format(remote_file,local_file))
-
+        self.logger.debug("Downloaded {} to {}".format(remote_file, local_file))
 
     def list(self, remote_folder):
         """List all the files of a cloud directory.
@@ -155,7 +119,7 @@ class S3_Plugin(AbstractPlugin):
             raise OsmosisError
 
     def list_buckets(self):
-        response = s3_client.list_buckets()
+        response = self.s3_client.list_buckets()
         logging.debug("Found {} buckets".format(len(response['Buckets'])))
 
         for bucket in response['Buckets']:
@@ -177,7 +141,8 @@ class S3_Plugin(AbstractPlugin):
         #     self.logger.error("Either local or remote file must be a s3 url and the other must be a local reference")
         #     raise OsmosisError
         if not (source_path.startswith('s3://') or dest_path.startswith('s3://')):
-            self.logger.error("Source or destination must be a s3 url (format s3://my_bucket/my_file)")
+            self.logger.error(
+                "Source or destination must be a s3 url (format s3://my_bucket/my_file)")
             raise OsmosisError
         if source_path.startswith('s3://') and dest_path.startswith('s3://'):
             self.logger.error("Source or destination must be a local directory")
@@ -218,7 +183,18 @@ class S3_Plugin(AbstractPlugin):
         Raises:
              :exc:`~..OsmosisError`: if the file does not exist or if the action could not be done.
         """
-        pass
+        bucket, path = self.parse_s3_path(remote_file)
+        region = self.s3_client.get_bucket_location(Bucket=bucket)['LocationConstraint']
+        sign_client = boto3.client('s3', region_name=region)
+        url = sign_client.generate_presigned_url(
+            ClientMethod='get_object',
+            Params={
+                'Bucket': bucket,
+                'Key': path
+            },
+            ExpiresIn=3600 * 24  # 1day
+        )
+        return url
 
     def delete(self, remote_file):
         """Delete a file of a remote resource manager
@@ -233,10 +209,10 @@ class S3_Plugin(AbstractPlugin):
             self.s3_client.delete_object(Bucket=bucket, Key=path)
         except Exception as e:
             raise OsmosisError
-        self.logger.debug("Deleted {} from {}".format(path,bucket))
+        self.logger.debug("Deleted {} from {}".format(path, bucket))
 
     def get_bucket(self, bucketname):
-        #TODO: add
+        # TODO: add
         pass
 
     def create_bucket(self, bucket):
@@ -250,16 +226,16 @@ class S3_Plugin(AbstractPlugin):
             self.s3_resource.meta.client.head_bucket(Bucket=bucket)
         except botocore.exceptions.ClientError:
             try:
-                #if self.location == 'us-east-1':
+                # if self.location == 'us-east-1':
                 #    self.s3.create_bucket(Bucket=bucket)
-                #else:
+                # else:
                 self.s3_client.create_bucket(Bucket=bucket,
-                                             CreateBucketConfiguration={'LocationConstraint': self.aws_region})
+                                             CreateBucketConfiguration={
+                                                 'LocationConstraint': self.aws_region})
             except Exception:
                 logging.error(f"Error creating bucket {bucket} in region {self.aws_region}")
                 raise OsmosisError
         self.logger.debug("Created bucket {}".format(bucket))
-
 
     def delete_bucket(self, bucket_name):
         """Delete a bucket in S3
@@ -314,4 +290,3 @@ class S3_Plugin(AbstractPlugin):
     def retrieve_availability_proof(self):
         """TBD"""
         pass
-
