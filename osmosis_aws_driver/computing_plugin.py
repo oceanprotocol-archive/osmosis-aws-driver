@@ -2,6 +2,10 @@ from osmosis_driver_interface.computing_plugin import AbstractPlugin
 
 
 class Plugin(AbstractPlugin):
+
+    def __init__(self, config=None):
+        self.config = config
+
     def type(self):
         """str: the type of this plugin (``'AWS'``)"""
         return 'AWS'

@@ -1,11 +1,11 @@
-import os
 import configparser
+import os
 
 
 def load_config_section(file_path, section):
     try:
         assert file_path and os.path.exists(file_path), 'config file_path is required.'
-        #raise
+        # raise
         config = parse_config(file_path, section)
         return config
     except Exception as err:
@@ -29,4 +29,3 @@ def parse_config(file_path, section):
             print("exception on %s" % str(err))
             config_dict[option] = None
     return config_dict
-

@@ -1,8 +1,8 @@
+import logging
 import sys
 
 import boto3
 import botocore
-import logging
 from osmosis_driver_interface.data_plugin import AbstractPlugin
 from osmosis_driver_interface.exceptions import OsmosisError
 
@@ -45,9 +45,6 @@ if 1:
 
 
 class Plugin(AbstractPlugin):
-    """
-    """
-
     def __init__(self, config=None):
         """Initialize a :class:`~.S3_Plugin`.
 
