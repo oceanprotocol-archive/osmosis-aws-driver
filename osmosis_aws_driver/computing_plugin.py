@@ -1,3 +1,6 @@
+#  Copyright 2018 Ocean Protocol Foundation
+#  SPDX-License-Identifier: Apache-2.0
+
 from osmosis_driver_interface.computing_plugin import AbstractPlugin
 
 
