@@ -2,41 +2,41 @@
 
 # osmosis-aws-driver
 
-> 💧 Osmosis Data S3 Driver Implementation
+> 💧 Osmosis AWS Driver Implementation
 > [oceanprotocol.com](https://oceanprotocol.com)
-
 
 [![Build Status](https://travis-ci.com/oceanprotocol/osmosis-aws-driver.svg)](https://travis-ci.com/oceanprotocol/osmosis-aws-driver)
 [![PyPI](https://img.shields.io/pypi/v/osmosis-aws-driver.svg)](https://pypi.org/project/osmosis-aws-driver/)
 [![GitHub contributors](https://img.shields.io/github/contributors/oceanprotocol/osmosis-aws-driver.svg)](https://github.com/oceanprotocol/osmosis-aws-driver/graphs/contributors)
 
 ---
+
 ## Table of Contents
 
-  - [Quickstart](#quickstart)
-  - [Code style](#code-style)
-  - [Testing](#testing)
-  - [New Version](#new-version)
-  - [License](#license)
+- [Setup](#setup)
+- [Code Style](#code-style)
+- [Testing](#testing)
+- [New Version](#new-version)
+- [License](#license)
 
 ---
 
-## Quickstart
+## Setup
 
-The application interacts with AWS API using boto3 library, so you need to configure your system in order to boto3 can
-login as described in https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html.
-At the moment there is only a first implementation for the data_plugin, but in the future is going to be an instance
-for the computing plugin as well.
+To use Amazon S3 storage with Brizo, you must set up some Amazon S3 storage and set some AWS configuration settings on the computer where Brizo is running. For details, see:
 
-## Code style
+- [the README.md file in the Brizo repository](https://github.com/oceanprotocol/brizo/blob/develop/README.md) and
+- [the tutorial about how to set up Amazon S3 storage for use with Ocean Protocol](https://docs.oceanprotocol.com/tutorials/amazon-s3-for-brizo/)
 
-The information about code style in python is documented in this two links [python-developer-guide](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/development/python-developer-guide.md)
-and [python-style-guide](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/development/python-style-guide.md).
-    
+## Code Style
+
+Information about our Python code style is documented in the [python-developer-guide](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/development/python-developer-guide.md)
+and the [python-style-guide](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/development/python-style-guide.md).
+
 ## Testing
 
 Automatic tests are setup via Travis, executing `tox`.
-Our test use pytest framework.
+Our tests use the pytest framework.
 
 ## New Version
 
@@ -44,7 +44,7 @@ The `bumpversion.sh` script helps to bump the project version. You can execute t
 
 ## License
 
-```
+```text
 Copyright 2018 Ocean Protocol Foundation Ltd.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,3 +58,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```
+
+Note: Installing this package (osmosis-aws-driver) installs the boto3 package which also has an Apache-2.0 license. Installing boto3 installs the docutils package. The docutils package might have licensing that is incompatible with the Apache-2.0 license. We have opened [an issue](https://github.com/boto/boto3/issues/1916) on the boto3 repository to let them know about the potential licensing conflict and to resolve it if necessary.

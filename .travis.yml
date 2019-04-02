@@ -1,4 +1,11 @@
 language: python
+
+env:
+  global:
+  - AWS_S3_MODULE=aws
+  - AWS_S3_PATH=./osmosis_aws_driver
+  - AWS_S3_REGION=us-west-1
+
 python:
   - 3.6
 
