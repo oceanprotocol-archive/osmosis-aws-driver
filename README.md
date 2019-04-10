@@ -59,5 +59,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-
-Note: Installing this package (osmosis-aws-driver) installs the boto3 package which also has an Apache-2.0 license. Installing boto3 installs the docutils package. The docutils package might have licensing that is incompatible with the Apache-2.0 license. We have opened [an issue](https://github.com/boto/boto3/issues/1916) on the boto3 repository to let them know about the potential licensing conflict and to resolve it if necessary.
