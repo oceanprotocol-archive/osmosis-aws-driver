@@ -2,6 +2,7 @@
 #  SPDX-License-Identifier: Apache-2.0
 
 import logging
+import os
 
 import boto3
 import botocore
@@ -29,14 +30,22 @@ class Plugin(AbstractPlugin):
 
         # Logging for this class
         self.logger = logging.getLogger('Plugin')
+        access_key = os.getenv('AWS_ACCESS_KEY')
+        secret_key = os.getenv('AWS_SECRET_KEY')
+        session_token = os.getenv('AWS_SESSION_TOKEN')
 
+        aws_credentials = {
+            "aws_access_key_id": access_key,
+            "aws_secret_access_key": secret_key,
+            "aws_session_token": session_token
+        }
+        boto3.setup_default_session(**aws_credentials)
         # The S3 client object
         self.s3_client = boto3.client('s3')
         self.aws_region = self.s3_client.meta.config.region_name
 
         # The S# resource object
         self.s3_resource = boto3.resource('s3')
-
         self.logger.debug("Created a new S3 plugin object in region: {}".format(self.aws_region))
 
     @property
@@ -119,17 +128,7 @@ class Plugin(AbstractPlugin):
             page_iterator = paginator.paginate(Bucket=bucket, Delimiter='/', Prefix=path)
             return page_iterator.build_full_result()['Contents']
         except Exception as e:
-            raise OsmosisError
-
-    def list_buckets(self):
-        response = self.s3_client.list_buckets()
-        logging.debug("Found {} buckets".format(len(response['Buckets'])))
-
-        for bucket in response['Buckets']:
-            print(bucket['Name'])
-            # print(bucket.name)
-
-        return response['Buckets']
+            raise OsmosisError(e)
 
     def copy(self, source_path: str, dest_path: str):
         """Copy file from a path to another path.
@@ -225,19 +224,29 @@ class Plugin(AbstractPlugin):
         Raises:
              :exc:`~..OsmosisError`
         """
+        success = True
         try:
             self.s3_resource.meta.client.head_bucket(Bucket=bucket)
-        except botocore.exceptions.ClientError:
+        except botocore.exceptions.ClientError as e:
+            logging.warning(f'Error calling `head_bucket`: {e}')
+            success = False
+
+        if not success:
             try:
-                # if self.location == 'us-east-1':
-                #    self.s3.create_bucket(Bucket=bucket)
-                # else:
                 self.s3_client.create_bucket(Bucket=bucket,
                                              CreateBucketConfiguration={
                                                  'LocationConstraint': self.aws_region})
-            except Exception:
-                logging.error(f"Error creating bucket {bucket} in region {self.aws_region}")
-                raise OsmosisError
+            except Exception as e:
+                logging.warning(f"Error creating bucket {bucket} in region {self.aws_region}: {e}")
+
+        if not success:
+            try:
+                self.s3_client.create_bucket(Bucket=bucket)
+            except Exception as e:
+                msg = f"Error creating bucket {bucket}: {e}"
+                logging.error(msg)
+                raise OsmosisError(msg)
+
         self.logger.debug("Created bucket {}".format(bucket))
 
     def delete_bucket(self, bucket_name):
@@ -253,9 +262,10 @@ class Plugin(AbstractPlugin):
             for key in bucket.objects.all():
                 key.delete()
             bucket.delete()
-        except Exception:
-            logging.error(f"Error deleting bucket {bucket_name} in region {self.location}")
-            raise OsmosisError
+        except Exception as e:
+            msg = f"Error deleting bucket {bucket_name} in region {self.aws_region}: {e}"
+            logging.error(msg)
+            raise OsmosisError(msg)
         self.logger.debug("Deleted bucket {}".format(bucket_name))
 
     def list_buckets(self):
@@ -267,10 +277,18 @@ class Plugin(AbstractPlugin):
         """
         try:
             response = self.s3_client.list_buckets()
-            return response['Buckets']
-        except Exception:
-            self.logger.error(f"Error listing buckets")
-            raise OsmosisError
+            buckets = response['Buckets'] if response and 'Buckets' in response else []
+            if buckets:
+                logging.debug(f'Found {len(buckets)} buckets')
+                _buckets = [str(b) for b in buckets]
+                logging.debug('**** Buckets are:\n' + '\n'.join(_buckets))
+                return response['Buckets']
+            return []
+
+        except Exception as e:
+            msg = f"Error listing buckets: {e}"
+            self.logger.error(msg)
+            raise OsmosisError(msg)
 
     def create_directory(self, remote_folder):
         """Create a directory in S3
@@ -287,8 +305,8 @@ class Plugin(AbstractPlugin):
         try:
             self.create_bucket(bucket)
             self.s3_client.put_object(Bucket=bucket, Body='', Key=path)
-        except Exception:
-            raise OsmosisError
+        except Exception as e:
+            raise OsmosisError(f'Error creating a directory in s3: {e}')
 
     def retrieve_availability_proof(self):
         """TBD"""
