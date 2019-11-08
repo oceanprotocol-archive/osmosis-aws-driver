@@ -28,6 +28,8 @@ To use Amazon S3 storage with Brizo, you must set up some Amazon S3 storage and 
 - [the README.md file in the Brizo repository](https://github.com/oceanprotocol/brizo/blob/develop/README.md) and
 - [the tutorial about how to set up Amazon S3 storage for use with Ocean Protocol](https://docs.oceanprotocol.com/tutorials/amazon-s3-for-brizo/)
 
+Alternatively, you can set the access keys/secret in environment variables as in the file `aws-access-env-vars`. 
+ 
 ## Code Style
 
 Information about our Python code style is documented in the [python-developer-guide](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/development/python-developer-guide.md)
