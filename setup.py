@@ -20,7 +20,7 @@ install_requirements = [
     'coloredlogs',
     'boto3 == 1.8.7',
     'PyYAML>=4.2b1',
-    'osmosis-driver-interface==0.0.6',
+    'osmosis-driver-interface>=0.1.0',
 ]
 
 # Required to run setup.py:
